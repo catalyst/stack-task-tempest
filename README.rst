@@ -2,7 +2,6 @@ Stacktask Tempest Plugin
 =====================
 Tempest plugin that runs a Stacktask test case.
 
-
 ============
 Installation
 ============
@@ -13,6 +12,9 @@ You can install the plugin using pip, directly into the python environment tempe
     $ cd tempest
     $ source .venv/bin/activate
     $ pip install stacktask-tempest-plugin
+
+    # Or, for the development testpypi version:
+    $ pip install -i https://testpypi.python.org/pypi --upgrade stacktask-tempest-plugin
 
 ============
 Running tests
@@ -57,12 +59,14 @@ These steps require a pipy account, configured in ~/.pypirc
 Register the project with pypi:
 
 .. code-block:: bash
+
     $ python setup.py register -r pypitest
 
 
 Upload a new version:
 
 .. code-block:: bash
+
     $ python setup.py sdist upload -r pypitest
 
 Increment the version number in setup.cfg for any new versions that need to be uploaded.

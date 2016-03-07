@@ -5,7 +5,7 @@ from tempest.test_discover import plugins
 from stacktask_tempest_plugin import config as config_share
 
 
-class MyPlugin(plugins.TempestPlugin):
+class StacktaskTempestPlugin(plugins.TempestPlugin):
     def get_opt_lists(self):
         return [(
             config_share.stacktask_group.name,
