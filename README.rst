@@ -5,7 +5,7 @@ Tempest plugin that runs a Stacktask test case.
 ============
 Installation
 ============
-You can install the plugin using pip, directly into the python environment tempest uses (either global or a virutalenv):
+You can install the plugin using pip, directly into the python environment tempest uses (either global or a virtualenv):
 
 .. code-block:: bash
 
@@ -54,7 +54,7 @@ Pypi package creation
 ============
 
 There are better guides for pypi, but the basic commands may be useful.
-These steps require a pipy account, configured in ~/.pypirc
+These steps require a pypi account, configured in ~/.pypirc
 
 Register the project with pypi:
 

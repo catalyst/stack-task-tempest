@@ -24,12 +24,8 @@ class BaseStacktaskTest(tempest.test.BaseTestCase):
     @classmethod
     def setup_credentials(cls):
         super(BaseStacktaskTest, cls).setup_credentials()
-        # Move to config:
-        #    CONF.stacktask.project_admin_role
-        # BaseTestCase may be able to do this logic instead:
-        #   self.credentials = ['project_admin']
-        project_admin_role = 'project_admin'
-        cls.os = cls.get_client_manager(roles=[project_admin_role])
+        # NOTE(dalees): Should convert this to simply use cls.credentials
+        cls.os = cls.get_client_manager(roles=cls.credential_roles)
 
     @classmethod
     def setup_clients(cls):
