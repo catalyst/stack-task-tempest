@@ -36,20 +36,25 @@ class BaseStacktaskTest(tempest.test.BaseTestCase):
             CONF.identity.region,
             endpoint_type='publicURL',
             **cls.os.default_params)
-        cls.users_client = cls.os.users_client
-        cls.roles_client = cls.os.roles_client
+        cls.projects_client = cls.os.projects_client
+        cls.users_client = cls.os.users_v3_client
+        cls.roles_client = cls.os.roles_v3_client
 
     def get_token_by_taskid(self, taskid):
-        # Note(dale): filters are broken (here or client).
         tokens = self.stacktask_client.get_tokens(
             filters={'task_id': {"exact": taskid}}
         )
-        token = [t for t in tokens['tokens'] if
-                 t['task'] == taskid][0]
-        return token['token']
+        return tokens['tokens'][0]['token']
+
+    def assert_user_has_role(self, project_id, user_id, role):
+        ks_role_list = self.roles_client.list_user_roles_on_project(
+            project_id,
+            user_id)
+        actual_roles = set([r['name'] for r in ks_role_list['roles']])
+        self.assertIn(role, actual_roles)
 
     def assert_user_roles(self, project_id, user_id, expected_roles):
-        ks_role_list = self.roles_client.list_user_roles(
+        ks_role_list = self.roles_client.list_user_roles_on_project(
             project_id,
             user_id)
         actual_roles = set([r['name'] for r in ks_role_list['roles']])
@@ -65,3 +70,8 @@ class BaseStacktaskTest(tempest.test.BaseTestCase):
         user_list = func()
         user = [u for u in user_list['users'] if u['name'] == name][0]
         return user
+
+    def get_project_by_name(self, name):
+        projects = self.projects_client.list_projects()
+        project = [p for p in projects['projects'] if p['name'] == name][0]
+        return project
