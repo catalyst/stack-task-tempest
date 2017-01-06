@@ -30,7 +30,6 @@ class StacktaskAdminTestUsers(base.BaseStacktaskTest):
 
         # list users, confirm that the invited user appears.
         invited_user = self.get_user_by_name(u_email)
-        self.addCleanup(self.stacktask_client.revoke_user, invited_user['id'])
         self.assertEqual(invited_user['cohort'], 'Invited')
         self.assertEqual(invited_user['status'], 'Invited')
 
@@ -51,6 +50,5 @@ class StacktaskAdminTestUsers(base.BaseStacktaskTest):
         self.addCleanup(self.users_client.delete_user, ks_user['id'])
 
         # Verify member role with keystone
-        # NOTE: ASSUMES USER DEFAULT TENANT IS CORRECT.
-        # It will only be the case if the user is newly created.
-        self.assert_user_roles(ks_user['project_id'], ks_user['id'], u_roles)
+        self.assert_user_roles(
+            self.os.credentials.project_id, ks_user['id'], u_roles)

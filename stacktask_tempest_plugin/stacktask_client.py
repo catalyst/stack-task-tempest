@@ -50,13 +50,15 @@ class StacktaskClient(rest_client.RestClient):
         self.expected_success(200, resp.status)
         return rest_client.ResponseBody(resp, None)
 
-    def get_tokens(self, json_data={}, filters={}):
+    def get_tokens(self, filters={}):
         """ Returns dict of tokens matching the provided filters """
         uri = 'tokens'
 
-        filter_json = {'filters': json.dumps(filters)}
+        if filters:
+            filters = {'filters': json.dumps(filters)}
+            uri += "?%s" % urllib.urlencode(filters, True)
 
-        resp, body = self.get(uri, headers=filter_json)
+        resp, body = self.get(uri)
         self.expected_success(200, resp.status)
         body = json.loads(body)
         return rest_client.ResponseBody(resp, body)
@@ -67,6 +69,44 @@ class StacktaskClient(rest_client.RestClient):
         post_body = json.dumps(json_data)
 
         resp, body = self.post(uri, post_body)
+        self.expected_success(200, resp.status)
+        body = json.loads(body)
+        return rest_client.ResponseBody(resp, body)
+
+    def get_tasks(self, filters={}):
+        """ Returns dict of tasks matching the provided filters """
+        uri = 'tasks'
+
+        if filters:
+            filters = {'filters': json.dumps(filters)}
+            uri = "%s?%s" % (uri, urllib.urlencode(filters, True))
+
+        resp, body = self.get(uri)
+        self.expected_success(200, resp.status)
+        body = json.loads(body)
+        return rest_client.ResponseBody(resp, body)
+
+    def approve_task(self, task_id):
+        """ Returns dict of tasks matching the provided filters """
+        uri = 'tasks/%s' % task_id
+
+        data = {"approved": True}
+
+        resp, body = self.post(uri, json.dumps(data))
+        self.expected_success(200, resp.status)
+        body = json.loads(body)
+        return rest_client.ResponseBody(resp, body)
+
+    def signup(self, project_name, email):
+        """ Signup for a new project. """
+
+        uri = 'openstack/sign-up'
+        data = {
+            "project_name": project_name,
+            "email": email,
+        }
+        post_body = json.dumps(data)
+        resp, body = self.post(uri, body=post_body)
         self.expected_success(200, resp.status)
         body = json.loads(body)
         return rest_client.ResponseBody(resp, body)
