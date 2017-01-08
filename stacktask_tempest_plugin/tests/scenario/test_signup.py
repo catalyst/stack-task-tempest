@@ -14,16 +14,7 @@ class StacktaskSignup(base.BaseStacktaskTest):
     def resource_cleanup(cls):
         super(StacktaskSignup, cls).resource_cleanup()
 
-    @test.idempotent_id('ebb6a06d-198f-48d1-868c-f7e36f4fa76a')
-    @test.services('identity')
-    def test_signup(self):
-        project_name = data_utils.rand_name('stacktask')
-        u_email = '%s@example.com' % project_name
-        u_password = data_utils.rand_password()
-
-        # create new signup
-        self.stacktask_client.signup(project_name, u_email)
-
+    def _get_signup_task(self, project_name):
         # now we need to approve the signup
         filters = {
             "task_type": {"exact": "signup"},
@@ -34,21 +25,31 @@ class StacktaskSignup(base.BaseStacktaskTest):
             },
         }
         signup_tasks = self.stacktask_client.get_tasks(filters=filters)
-        found = None
         for task in signup_tasks['tasks']:
             for action in task['actions']:
                 if (action['action_name'] == "NewProjectWithUserAction" and
                         action['data']['project_name'] == project_name):
-                    found = task
-                    break
-            if found:
-                break
+                    return task
+        return None
 
-        self.stacktask_client.approve_task(found['uuid'])
+    @test.idempotent_id('ebb6a06d-198f-48d1-868c-f7e36f4fa76a')
+    @test.services('identity')
+    def test_signup(self):
+        project_name = data_utils.rand_name('stacktask')
+        u_email = '%s@example.com' % project_name
+        u_password = data_utils.rand_password()
+
+        # create new signup
+        self.stacktask_client.signup(project_name, u_email)
+
+        signup_task = self._get_signup_task(project_name)
+        self.assertIsNotNone(signup_task)
+
+        self.stacktask_client.approve_task(signup_task['uuid'])
 
         # using the task id, bypass email and get the auth token
         # NOTE(dalees): Requires full 'admin' role to access sensitive tokens.
-        token_id = self.get_token_by_taskid(found['uuid'])
+        token_id = self.get_token_by_taskid(signup_task['uuid'])
         self.stacktask_client.token_submit(
             token_id,
             {"password": u_password}
