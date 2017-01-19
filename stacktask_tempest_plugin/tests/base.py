@@ -40,6 +40,14 @@ class BaseStacktaskTest(tempest.test.BaseTestCase):
         cls.users_client = cls.os.users_v3_client
         cls.roles_client = cls.os.roles_v3_client
 
+    def get_creds_project_id(self):
+        # Note(dalees): support both project_id and tenant_id so we allow
+        #               Tempest 12.0.0 or 12.2.0.
+        project_id = self.os.credentials.get(
+            'project_id',
+            self.os.credentials.get('tenant_id'))
+        return project_id
+
     def get_token_by_taskid(self, taskid):
         tokens = self.stacktask_client.get_tokens(
             filters={'task_id': {"exact": taskid}}

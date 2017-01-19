@@ -51,4 +51,4 @@ class StacktaskAdminTestUsers(base.BaseStacktaskTest):
 
         # Verify member role with keystone
         self.assert_user_roles(
-            self.os.credentials.project_id, ks_user['id'], u_roles)
+            self.get_creds_project_id(), ks_user['id'], u_roles)

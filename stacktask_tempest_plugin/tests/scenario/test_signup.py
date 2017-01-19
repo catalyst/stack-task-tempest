@@ -21,7 +21,7 @@ class StacktaskSignup(base.BaseStacktaskTest):
             "completed": {"exact": False},
             "approved": {"exact": False},
             "keystone_user": {
-                "contains": self.os.credentials.project_id,
+                "contains": self.get_creds_project_id(),
             },
         }
         signup_tasks = self.stacktask_client.get_tasks(filters=filters)
