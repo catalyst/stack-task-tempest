@@ -43,11 +43,11 @@ class StacktaskAdminTestUsers(base.BaseStacktaskTest):
 
         # Confirm user has been created in keystone
         ks_user = self.get_user_by_name(u_email, client='keystone')
+        self.addCleanup(self.users_client.delete_user, ks_user['id'])
         st_user = self.get_user_by_name(u_email)
         self.assertEqual(st_user['cohort'], 'Member')
         self.assertEqual(st_user['status'], 'Active')
         self.assertEqual(st_user['id'], ks_user['id'])
-        self.addCleanup(self.users_client.delete_user, ks_user['id'])
 
         # Verify member role with keystone
         self.assert_user_roles(

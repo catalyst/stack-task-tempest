@@ -54,7 +54,16 @@ class BaseStacktaskTest(tempest.test.BaseTestCase):
         self.assertIn(role, actual_roles)
 
     def assert_user_roles(self, project_id, user_id, expected_roles):
-        ks_role_list = self.roles_client.list_user_roles_on_project(
+        # NOTE(dalees): Between tags 12.0.0 and 12.1.0 Tempest has renamed the
+        #               function list_user_roles to list_user_roles_on_project,
+        #               so we'll support both until deprecation of 12.0.0.
+        list_roles_func = getattr(
+            self.roles_client,
+            'list_user_roles_on_project',
+            None)
+        if list_roles_func is None:
+            list_roles_func = getattr(self.roles_client, 'list_user_roles')
+        ks_role_list = list_roles_func(
             project_id,
             user_id)
         actual_roles = set([r['name'] for r in ks_role_list['roles']])
