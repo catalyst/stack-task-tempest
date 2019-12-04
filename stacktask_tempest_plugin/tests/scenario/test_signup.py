@@ -1,5 +1,6 @@
 from stacktask_tempest_plugin.tests import base
-from tempest import test
+from tempest.common import utils
+from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
 
 
@@ -32,8 +33,8 @@ class StacktaskSignup(base.BaseStacktaskTest):
                     return task
         return None
 
-    @test.idempotent_id('ebb6a06d-198f-48d1-868c-f7e36f4fa76a')
-    @test.services('identity')
+    @decorators.idempotent_id('ebb6a06d-198f-48d1-868c-f7e36f4fa76a')
+    @utils.services('identity')
     def test_signup(self):
         project_name = data_utils.rand_name('stacktask')
         u_email = '%s@example.com' % project_name
