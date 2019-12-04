@@ -1,5 +1,6 @@
 from stacktask_tempest_plugin.tests import base
-from tempest import test
+from tempest.common import utils
+from tempest.lib import decorators
 from tempest.lib.common.utils import data_utils
 
 
@@ -14,8 +15,8 @@ class StacktaskAdminTestUsers(base.BaseStacktaskTest):
     def resource_cleanup(cls):
         super(StacktaskAdminTestUsers, cls).resource_cleanup()
 
-    @test.idempotent_id('8c3f736e-e071-11e5-9bf6-74d4358b0331')
-    @test.services('identity')
+    @decorators.idempotent_id('8c3f736e-e071-11e5-9bf6-74d4358b0331')
+    @utils.services('identity')
     def test_invite_user(self):
         u_name = data_utils.rand_name('stacktask')
         u_email = '%s@example.com' % u_name
