@@ -31,7 +31,7 @@ class StacktaskClient(rest_client.RestClient):
         }
         post_body = json.dumps(data)
         resp, body = self.post(uri, body=post_body)
-        self.expected_success(200, resp.status)
+        self.expected_success(202, resp.status)
         body = json.loads(body)
         return rest_client.ResponseBody(resp, body)
 
@@ -107,6 +107,6 @@ class StacktaskClient(rest_client.RestClient):
         }
         post_body = json.dumps(data)
         resp, body = self.post(uri, body=post_body)
-        self.expected_success(200, resp.status)
+        self.expected_success(202, resp.status)
         body = json.loads(body)
         return rest_client.ResponseBody(resp, body)
